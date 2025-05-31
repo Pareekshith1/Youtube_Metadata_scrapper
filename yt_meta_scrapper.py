@@ -9,7 +9,7 @@ import selenium
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
 #import time to implement a sleep
 import time
 #import re for the hashtag extraction
@@ -22,15 +22,15 @@ import os
 
 #=======Scrapping Function=======
 def short_link_fetcher(channel_link):
-    options = Options()
-    options.binary_location = "/usr/bin/chromium"
+    options = webdriver.ChromeOptions()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    options.binary_location = "/usr/bin/chromium"  # This is the key!   
 
     #service = Service(CHROME_DRIVER_PATH)
-    driver = webdriver.Chrome(options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
     driver.get(channel_link)
     time.sleep(5)
