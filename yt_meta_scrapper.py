@@ -22,12 +22,17 @@ import os
 
 #=======Scrapping Function=======
 def short_link_fetcher(channel_link):
+    
     options = webdriver.ChromeOptions()
-    options.add_argument("--headless")
-    options.add_argument("--disable-gpu")
+
+    # Use headless mode for Render
+    options.add_argument("--headless=new")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = "/usr/bin/chromium-browser"  # This is the key!   
+    options.add_argument("--disable-gpu")
+
+    # Point directly to chromium binary installed by apt
+    options.binary_location = "/usr/bin/chromium"  
 
     #service = Service(CHROME_DRIVER_PATH)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
