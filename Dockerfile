@@ -1,47 +1,38 @@
-# Use a secure base image with fewer vulnerabilities
-FROM python:3.13-slim
+FROM python:3.10-alpine
 
-# Set environment variables for headless Chrome
-ENV DEBIAN_FRONTEND=noninteractive
-ENV CHROME_BIN=/usr/bin/chromium
+ENV PYTHONUNBUFFERED=1
+ENV CHROME_BIN=/usr/bin/chromium-browser
 
-# Install dependencies including Chromium
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# Install Chromium and dependencies
+RUN apk update && apk add --no-cache \
     chromium \
-    chromium-driver \
-    wget \
+    chromium-chromedriver \
+    bash \
     curl \
-    unzip \
-    gnupg \
-    ca-certificates \
-    fonts-liberation \
-    libappindicator3-1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libatk1.0-0 \
-    libcups2 \
-    libdbus-1-3 \
-    libgdk-pixbuf2.0-0 \
-    libnspr4 \
-    libnss3 \
-    libx11-xcb1 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxrandr2 \
-    xdg-utils \
-    --no-install-recommends && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    git \
+    libc6-compat \
+    libstdc++ \
+    libffi \
+    jpeg-dev \
+    zlib-dev \
+    libjpeg \
+    gcc \
+    g++ \
+    python3-dev \
+    musl-dev \
+    make
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy the app files
+# Copy project files
 COPY . .
 
-# Install Python dependencies
+# Install Python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run Streamlit
-CMD ["streamlit", "run", "yt_meta_scrapper.py"]
+# Expose port (Streamlit default)
+EXPOSE 8501
+
+# Run your app
+CMD ["streamlit", "run", "yt_meta_scrapper.py", "--server.port=8501", "--server.enableCORS=false"]

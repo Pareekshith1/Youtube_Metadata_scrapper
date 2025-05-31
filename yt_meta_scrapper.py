@@ -27,7 +27,7 @@ def short_link_fetcher(channel_link):
     options.add_argument("--disable-gpu")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    options.binary_location = "/usr/bin/chromium"  # This is the key!   
+    options.binary_location = "/usr/bin/chromium-browser"  # This is the key!   
 
     #service = Service(CHROME_DRIVER_PATH)
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
