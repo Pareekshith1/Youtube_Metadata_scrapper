@@ -9,6 +9,7 @@ import selenium
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
 #import time to implement a sleep
 import time
 #import re for the hashtag extraction
@@ -25,9 +26,11 @@ def short_link_fetcher(channel_link):
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
     options.add_argument("--window-size=1920,1080")
+    options.add_argument("--no-sandbox")  # VERY important for Streamlit Cloud
+    options.add_argument("--disable-dev-shm-usage")  # Also helps in cloud environments
 
     service = Service(CHROME_DRIVER_PATH)
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
     driver.get(channel_link)
     time.sleep(5)
