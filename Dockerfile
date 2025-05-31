@@ -23,21 +23,23 @@ RUN apt-get update && apt-get install -y \
     --no-install-recommends && \
     rm -rf /var/lib/apt/lists/*
 
-# Set Chromium path environment variable for Selenium
+# Set environment variables
 ENV CHROME_BIN=/usr/bin/chromium
+ENV CHROMEDRIVER_PATH=/usr/bin/chromedriver
+ENV PYTHONUNBUFFERED=1
 
 # Set working directory
 WORKDIR /app
 
-# Copy requirements & install
+# Copy and install dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy your app code
+# Copy app files
 COPY . .
 
-# Expose port if needed (Streamlit default 8501)
+# Expose Streamlit port
 EXPOSE 8501
 
-# Command to run your app
+# Run Streamlit app
 CMD ["streamlit", "run", "yt_meta_scrapper.py", "--server.port=8501", "--server.address=0.0.0.0"]
