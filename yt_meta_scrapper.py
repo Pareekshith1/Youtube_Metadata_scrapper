@@ -1,119 +1,99 @@
-#import streamlit for the framework
 import streamlit as st
-#import the extractor package
 import yt_dlp
-#import pandas for data-analytics
 import pandas as pd
-#import selenium for synamic web scrapping
-import selenium
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
-#import time to implement a sleep
 import time
-#import re for the hashtag extraction
 import re
-#import os for the path correction
-import os
 
-#=====CHROME DRIVER CONFIGURATION=======
-#CHROME_DRIVER_PATH = "./driver/chromedriver.exe"
-
-#=======Scrapping Function=======
+#======= Selenium Scraper Function =======
 def short_link_fetcher(channel_link):
-    
     options = Options()
     options.binary_location = "/usr/bin/chromium"
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
-    
-    # Use the preinstalled chromedriver binary path:
-    service = Service("/usr/bin/chromedriver")  # Use OS-installed driver
-    
-    driver = webdriver.Chrome(service=service, options=options)
 
+    # ✅ Use system-installed ChromeDriver (matches Chromium)
+    service = Service("/usr/bin/chromedriver")
+    driver = webdriver.Chrome(service=service, options=options)
 
     driver.get(channel_link)
     time.sleep(5)
 
+    # Scroll down to load more Shorts
     for _ in range(3):
-        driver.execute_script("window.scrollBy(0,1000);")
+        driver.execute_script("window.scrollBy(0, 1000);")
         time.sleep(2)
 
-    link= set()
-    elements = driver.find_elements(By.TAG_NAME,"a")
+    links = set()
+    elements = driver.find_elements(By.TAG_NAME, "a")
     for elm in elements:
         href = elm.get_attribute("href")
         if href and "/shorts/" in href:
-            link.add(href.split("?")[0])
+            links.add(href.split("?")[0])
 
     driver.quit()
-    return list(link)
+    return list(links)
 
-
-#========Metadata Extractor========\
+#======= Metadata Extractor =======
 def meta_data_extractor(links):
-    data =[]
+    data = []
     for link in links:
-        yld_opt = {
-            "quiet":True,
-            "skip_download":True,
+        ydl_opts = {
+            "quiet": True,
+            "skip_download": True,
         }
-        with yt_dlp.YoutubeDL(yld_opt) as yld:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             try:
-                info = yld.extract_info(link, download=False)
-                title = info.get("title","")
-                description = info.get("description","")
-                tags = info.get("tags",[])
+                info = ydl.extract_info(link, download=False)
+                title = info.get("title", "")
+                description = info.get("description", "")
+                tags = info.get("tags", [])
                 hashtags = re.findall(r"#\w+", description or "")
-                views = info.get("view_count",0)
-                likes = info.get("like_count",0)
-                date = info.get("upload_date")
+                views = info.get("view_count", 0)
+                likes = info.get("like_count", 0)
+                date = info.get("upload_date", "")
 
                 data.append({
-                    "Title":title,
+                    "Title": title,
                     "Description": description,
                     "Embedded_Tags": tags,
-                    "Hashtags":hashtags,
-                    "No_Of_Views":views,
-                    "No_Of_Likes":likes,
-                    "Upload_Date":date,
-                    "Shorts_Link":link,
+                    "Hashtags": hashtags,
+                    "No_Of_Views": views,
+                    "No_Of_Likes": likes,
+                    "Upload_Date": date,
+                    "Shorts_Link": link,
                 })
-
             except Exception as e:
-                st.warning(f"Failed to extractL {link} | Reason: {e}")
+                st.warning(f"Failed to extract: {link} | Reason: {e}")
     return pd.DataFrame(data)
 
+#======= Streamlit App UI =======
+st.set_page_config(page_title="YouTube Shorts Metadata Scraper", layout="wide")
+st.title("📽️ YouTube Shorts Metadata Scraper")
 
-#====== Streamlit App Ui=========
-st.set_page_config(page_title="Youtube Shorts Metadata Scrapper",layout="wide")
-st.title("Shorts Metadata Scrapper")
+channel_url = st.text_input("Enter the channel Shorts URL (e.g. https://www.youtube.com/@channel_name/shorts)")
 
-channel_url = st.text_input("Enter the channel url (Ex : 'https://www.youtube.com/channel_name/shorts' )")
-
-if st.button("Scrap contents"):
+if st.button("Scrape Contents"):
     if "shorts" not in channel_url:
-        st.error("Make sure the link ends with `/shorts`.")
+        st.error("⚠️ Make sure the link ends with `/shorts`.")
     else:
-        with st.spinner(f"Fetching you the requested metadata from {channel_url}"):
-            shorts_link = short_link_fetcher(channel_url)
-            df = meta_data_extractor(shorts_link)
+        with st.spinner(f"Fetching metadata from {channel_url}..."):
+            shorts_links = short_link_fetcher(channel_url)
+            df = meta_data_extractor(shorts_links)
+
             if not df.empty:
-                st.success(f"Found {len(df)} Shorts!")
+                st.success(f"✅ Found {len(df)} Shorts!")
                 st.dataframe(df)
                 csv = df.to_csv(index=False).encode("utf-8")
                 st.download_button(
-                    label="Download Meta-Data As CSV",
+                    label="⬇️ Download Metadata as CSV",
                     data=csv,
-                    file_name="Metadata_yt_shorts.csv",
+                    file_name="Metadata_YT_Shorts.csv",
                     mime="text/csv",
                 )
             else:
-                st.warning("No Shorts Metadata Extracted.")
-
-
-
+                st.warning("⚠️ No Shorts metadata extracted.")

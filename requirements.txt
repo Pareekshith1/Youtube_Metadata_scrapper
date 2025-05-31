@@ -1,5 +1,6 @@
 streamlit
+yt-dlp
 selenium
-yt_dlp
 pandas
+
 
