@@ -2,4 +2,4 @@ streamlit
 selenium
 yt_dlp
 pandas
-webdriver-manager
+

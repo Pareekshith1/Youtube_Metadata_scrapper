@@ -25,12 +25,14 @@ import os
 def short_link_fetcher(channel_link):
     
     options = Options()
-    options.binary_location = os.getenv("CHROME_BIN", "/usr/bin/chromium")
+    options.binary_location = "/usr/bin/chromium"
     options.add_argument("--headless")
-    options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
-
-    service = Service(executable_path=os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromedriver"))
+    options.add_argument("--disable-dev-shm-usage")
+    
+    # Use the preinstalled chromedriver binary path:
+    service = Service("/usr/bin/chromedriver")  # Use OS-installed driver
+    
     driver = webdriver.Chrome(service=service, options=options)
 
 
