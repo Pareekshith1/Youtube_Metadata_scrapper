@@ -1,1 +1,115 @@
-.ytvenv/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+*.manifest
+*.spec
+
+# Virtual Environments
+ytvenv/
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+.spyderproject
+.spyproject
+.ropeproject
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# PyCharm
+.idea/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# Testing
+.pytest_cache/
+.coverage
+.tox/
+htmlcov/
+.nox/
+coverage.xml
+*.cover
+*.log
+
+# Selenium
+driver/
+geckodriver.log
+chromedriver.log
+
+# Streamlit
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# CSV and Data files (optional - uncomment if needed)
+# *.csv
+# *.xlsx
+# *.json
+# Metadata_YT_Shorts.csv
+
+# Docker
+*.dockerignore
+docker-compose.override.yml
+
+# OS-specific
+Thumbs.db
+.DS_Store
+*.bak
+*.tmp
+
+# Logs
+*.log
+logs/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/

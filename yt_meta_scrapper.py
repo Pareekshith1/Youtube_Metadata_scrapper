@@ -11,13 +11,13 @@ import re
 #======= Selenium Scraper Function =======
 def short_link_fetcher(channel_link):
     options = Options()
-    options.binary_location = "/usr/bin/chromium"
+    options.binary_location = "/usr/bin/chromium"  # Add you chromium path here !!
     options.add_argument("--headless")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
 
     # ✅ Use system-installed ChromeDriver (matches Chromium)
-    service = Service("/usr/bin/chromedriver")
+    service = Service("/usr/bin/chromedriver") # add your chromium driver path here !!
     driver = webdriver.Chrome(service=service, options=options)
 
     driver.get(channel_link)

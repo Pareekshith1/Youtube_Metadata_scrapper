@@ -1,6 +1,18 @@
-streamlit
-yt-dlp
-selenium
-pandas
+# Web Framework
+streamlit==1.29.0
+
+# YouTube Data Extraction
+yt-dlp==2023.12.30
+
+# Web Scraping & Automation
+selenium==4.16.0
+
+# Data Processing
+pandas==2.1.4
+
+# Additional Dependencies (automatically installed with above packages)
+# These are listed for clarity and version tracking
+# numpy>=1.24.0  (installed with pandas)
+# python-dateutil>=2.8.2  (installed with pandas)
 
 
